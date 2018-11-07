@@ -16,13 +16,14 @@ HTTP.onreadystatechange = function(){
 }
 
 function d3Commands() {
-  // console.log(dataset);
-
+  // CONSTANTS
   const PADDING = 55;
   const BAR_HEIGHT = 30;
   const BAR_WIDTH = 5;
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const WIDTH = PADDING + (Math.ceil(dataset['monthlyVariance'].length / 12) * BAR_WIDTH) + PADDING;
   const HEIGHT = PADDING + (BAR_HEIGHT * 12) + PADDING;
+  // X-AXIS
   const X_MIN = new Date(d3.min(dataset['monthlyVariance'], (d) => d['year']), 0);
   const X_MAX = new Date(d3.max(dataset['monthlyVariance'], (d) => d['year']), 0);
   const TIME_FORMAT = d3.timeFormat("%Y")
@@ -30,6 +31,7 @@ function d3Commands() {
     .domain([X_MIN, X_MAX])
     .range([PADDING, WIDTH-PADDING]);
   const X_AXIS = d3.axisBottom(X_SCALE).tickFormat(TIME_FORMAT);
+  // Y-AXIS
   const Y_MIN = new Date(0, d3.min(dataset['monthlyVariance'], (d) => d['month'] - 1));
   const Y_MAX = new Date(0, d3.max(dataset['monthlyVariance'], (d) => d['month'] - 1));
   const MONTH_FORMAT = d3.timeFormat("%B");
@@ -38,11 +40,19 @@ function d3Commands() {
     .range([PADDING, HEIGHT-PADDING]);
   const Y_AXIS = d3.axisLeft(Y_SCALE).tickFormat(MONTH_FORMAT);
 
+  // SVG
   const svg = d3.select('body')
     .append('svg')
     .attr('height', HEIGHT)
     .attr('width', WIDTH);
 
+  const tooltip = d3.select('body')
+    .append('div')
+    .attr('class', 'tooltip')
+    .attr('id', 'tooltip')
+    .attr('opacity', 0);
+
+    // RENDER RECTS
   svg.selectAll("rect")
     .data(dataset['monthlyVariance'])
     .enter()
@@ -52,18 +62,37 @@ function d3Commands() {
     .attr('height', BAR_HEIGHT)
     .attr('width', BAR_WIDTH)
     .style("margin-top", "0px")
-    .style('fill', (d, i) => determineColor(d));
+    .style('fill', (d, i) => determineColor(d))
+    .on('mouseover', function(d, i) {
+      tooltip.transition()
+        .duration(0)
+        .style('opacity', 0.9);
+      tooltip.html(d['year'] + ' - ' + (MONTHS[(d['month']) - 1]) + '<br>' + 
+      (dataset['baseTemperature'] - d['variance']).toFixed(2) + '&#8451;' + '<br>'
+      + (d['variance']).toFixed(2) + '&#8451;')
+        .style('left', (d3.event.pageX) + 10 + 'px')
+        .style('top', (d3.event.pageY) + 'px')
+    })
+    .on('mousout', function(d, i) {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', 0);
+    })
+    ;
 
+    // X-AXIS
   svg.append('g')
     .attr('transform', 'translate(0,' + (HEIGHT - PADDING + BAR_HEIGHT) + ')')
     .attr('id', 'x-axis')
     .call(X_AXIS);
 
+    // Y-AXIS
   svg.append('g')
     .attr('transform', 'translate(' + (PADDING) + ',' + (BAR_HEIGHT / 2) + ')')
     .attr('id', 'y-axis')
     .call(Y_AXIS);
 }
+
 
 function determineColor(data) {
   if (data['variance'] <= -5.86) {
