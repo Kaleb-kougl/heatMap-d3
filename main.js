@@ -19,17 +19,18 @@ function d3Commands() {
   // console.log(dataset);
 
   const PADDING = 20;
-  const HEIGHT = 500;
-  const WIDTH = 6000;
   const BAR_HEIGHT = 30;
   const BAR_WIDTH = 5;
+  const WIDTH = PADDING + (Math.ceil(dataset['monthlyVariance'].length / 12) * BAR_WIDTH) + PADDING;
+  const HEIGHT = PADDING + (BAR_HEIGHT * 12) + PADDING;
   const X_MIN = new Date(d3.min(dataset['monthlyVariance'], (d) => d['year']), 0);
   const X_MAX = new Date(d3.max(dataset['monthlyVariance'], (d) => d['year']), 0);
   const TIME_FORMAT = d3.timeFormat("%Y")
   const X_SCALE = d3.scaleTime()
     .domain([X_MIN, X_MAX])
     .range([PADDING, WIDTH-PADDING]);
-  const X_AXIS = d3.axisBottom(X_SCALE).tickFormat(TIME_FORMAT); 
+  const X_AXIS = d3.axisBottom(X_SCALE).tickFormat(TIME_FORMAT);
+  let index = 0;
 
   const svg = d3.select('body')
     .append('svg')
@@ -41,9 +42,13 @@ function d3Commands() {
     .enter()
     .append('rect')
     .attr('x', (d, i) => {
-      // console.log(d)
-      return i * BAR_WIDTH})
-    .attr('y', 0)
+      // console.log(i % 12)
+      if (i % 12 === 0&& i !== 0) {
+        index++;
+      }
+      return (index * BAR_WIDTH) + PADDING
+    })
+    .attr('y', (d, i) => (i % 12) * BAR_HEIGHT)
     .attr('height', BAR_HEIGHT)
     .attr('width', BAR_WIDTH)
     .style('fill', 'red')
