@@ -66,27 +66,27 @@ function d3Commands() {
 }
 
 function determineColor(data) {
-  if (data['variance'] <= -6) {
+  if (data['variance'] <= -5.86) {
     return 'rgb(50, 57, 147)';
-  } else if (data['variance'] <= -5 && data['variance'] > -6){
+  } else if (data['variance'] <= -4.76 && data['variance'] > -5.86){
     return 'rgb(71, 118, 178)';
-  } else if (data['variance'] <= -4 && data['variance'] > -5){
+  } else if (data['variance'] <= -3.66 && data['variance'] > -4.76){
     return 'rgb(118, 173, 207)';
-  } else if (data['variance'] <= -3 && data['variance'] > -4){
+  } else if (data['variance'] <= -2.56 && data['variance'] > -3.66){
     return 'rgb(172, 217, 232)';
-  } else if (data['variance'] <= -2 && data['variance'] > -3){
+  } else if (data['variance'] <= -1.46 && data['variance'] > -2.56){
     return 'rgb(224, 243, 248)';
-  } else if (data['variance'] <= -1 && data['variance'] > -2){
+  } else if (data['variance'] <= -0.36 && data['variance'] > -1.46){
     return 'rgb(255, 254, 194)';
-  } else if (data['variance'] <= 0 && data['variance'] > -1){
+  } else if (data['variance'] <= 0.84 && data['variance'] > -0.36){
     return 'rgb(253, 223, 149)';
-  } else if (data['variance'] <= 1 && data['variance'] > 0) {
+  } else if (data['variance'] <= 1.94 && data['variance'] > 0.84) {
     return 'rgb(251, 173, 104)';
-  } else if (data['variance'] <= 2 && data['variance'] > 1) {
+  } else if (data['variance'] <= 3.04 && data['variance'] > 1.94) {
     return 'rgb(242, 110, 74)';
-  } else if (data['variance'] <= 3 && data['variance'] > 2) {
+  } else if (data['variance'] <= 4.14 && data['variance'] > 3.04) {
     return 'rgb(212, 50, 46)';
-  } else if (data['variance'] > 3){
+  } else if (data['variance'] > 4.14){
     return 'rgb(163, 6, 41)';
   } else {
     return 'rgb(255, 255, 255)';
