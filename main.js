@@ -20,11 +20,16 @@ function d3Commands() {
 
   const PADDING = 20;
   const HEIGHT = 500;
-  const WIDTH = 16000;
+  const WIDTH = 6000;
   const BAR_HEIGHT = 30;
   const BAR_WIDTH = 5;
-  const X_MIN = d3.min(dataset['monthlyVariance'], (d) => d['year']);
-  const X_MAX = d3.max(dataset['monthlyVariance'], (d) => d['year']);
+  const X_MIN = new Date(d3.min(dataset['monthlyVariance'], (d) => d['year']), 0);
+  const X_MAX = new Date(d3.max(dataset['monthlyVariance'], (d) => d['year']), 0);
+  const TIME_FORMAT = d3.timeFormat("%Y")
+  const X_SCALE = d3.scaleTime()
+    .domain([X_MIN, X_MAX])
+    .range([PADDING, WIDTH-PADDING]);
+  const X_AXIS = d3.axisBottom(X_SCALE).tickFormat(TIME_FORMAT); 
 
   const svg = d3.select('body')
     .append('svg')
@@ -44,4 +49,9 @@ function d3Commands() {
     .style('fill', 'red')
     .attr('stroke-width', 1.5)
     .attr('stroke', 'black');
+
+  svg.append('g')
+    .attr('transform', 'translate(0,' + (HEIGHT - PADDING) + ')')
+    .attr('id', 'x-axis')
+    .call(X_AXIS);
 }
