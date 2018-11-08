@@ -17,12 +17,13 @@ HTTP.onreadystatechange = function(){
 
 function d3Commands() {
   // CONSTANTS
-  const PADDING = 60;
+  const PADDING = 100;
+  const PADDING_TOP = 20;
   const BAR_HEIGHT = 30;
   const BAR_WIDTH = 5;
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const WIDTH = PADDING + (Math.ceil(dataset['monthlyVariance'].length / 12) * BAR_WIDTH) + PADDING;
-  const HEIGHT = PADDING + (BAR_HEIGHT * 12) + PADDING;
+  const HEIGHT = PADDING_TOP + (BAR_HEIGHT * 12) + PADDING;
   // X-AXIS
   const X_MIN = new Date(d3.min(dataset['monthlyVariance'], (d) => d['year']), 0);
   const X_MAX = new Date(d3.max(dataset['monthlyVariance'], (d) => d['year']), 0);
@@ -37,7 +38,7 @@ function d3Commands() {
   const MONTH_FORMAT = d3.timeFormat("%B");
   const Y_SCALE = d3.scaleTime()
     .domain([Y_MIN, Y_MAX])
-    .range([PADDING, HEIGHT-PADDING]);
+    .range([PADDING_TOP, HEIGHT-PADDING-PADDING_TOP]);
   const Y_AXIS = d3.axisLeft(Y_SCALE).tickFormat(MONTH_FORMAT);
 
   // SVG
@@ -82,12 +83,12 @@ function d3Commands() {
 
     // X-AXIS
   svg.append('g')
-    .attr('transform', 'translate(0,' + (HEIGHT - PADDING + BAR_HEIGHT) + ')')
+    .attr('transform', 'translate(0,' + (HEIGHT - PADDING - PADDING_TOP + BAR_HEIGHT) + ')')
     .attr('id', 'x-axis')
     .call(X_AXIS);
     // X-AXIS TITLE
   svg.append('text')
-    .attr('transform', 'translate(' + WIDTH / 2 + ',' + (HEIGHT) + ')')
+    .attr('transform', 'translate(' + WIDTH / 2 + ',' + (HEIGHT - (PADDING / 3)) + ')')
     .style("text-anchor", "middle")
     .text("Years");
 
@@ -99,11 +100,42 @@ function d3Commands() {
     // Y-AXIS TITLE
   svg.append('text')
     .attr("transform", "rotate(-90)")
-    .attr("y", 0)
+    .attr("y", (PADDING / 3))
     .attr("x", 0-(HEIGHT / 2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
     .text("Months");
+
+  // LEGEND
+  let legend = svg.append("g")
+    .attr("class", "legend")
+    .attr('id', 'legend')
+    .attr("transform","translate(" + PADDING + ",0)")
+    .style("font-size","12px")
+    .selectAll('g')
+    .data([
+      {variance: -5.86},
+      {variance: -4.76},
+      {variance: -3.66},
+      {variance: -2.56},
+      {variance: -1.46},
+      {variance: -0.36},
+      {variance: 0.84},
+      {variance: 1.94},
+      {variance: 3.04},
+      {variance: 4.14},
+      {variance: 5.00},
+    ])
+    .enter().append('g');
+
+  legend.append('rect')
+    .attr('y', (d, i) => HEIGHT - BAR_HEIGHT - PADDING_TOP)
+    .attr('x', (d, i) => i * BAR_WIDTH * 4)
+    .attr('height', BAR_HEIGHT)
+    .attr('width', BAR_WIDTH * 4)
+    .attr('fill', (d, i) => determineColor(d))
+    .attr('stroke-width', 1.5)
+    .attr('stroke', 'black');
 }
 
 
