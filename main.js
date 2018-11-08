@@ -18,7 +18,7 @@ HTTP.onreadystatechange = function(){
 function d3Commands() {
   // CONSTANTS
   const PADDING = 100;
-  const PADDING_TOP = 20;
+  const PADDING_TOP = 50;
   const BAR_HEIGHT = 30;
   const BAR_WIDTH = 5;
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -51,7 +51,25 @@ function d3Commands() {
     .append('div')
     .attr('class', 'tooltip')
     .attr('id', 'tooltip')
+    .attr('data-year', '')
     .attr('opacity', 0);
+
+  // TITLE
+  svg.append('text')
+    .attr("y", (15))
+    .attr("x", (WIDTH / 2))
+    .style("text-anchor", "middle")
+    .attr('id', "title")
+    .attr('font-size', '14pt')
+    .attr('font-weight', 'bold')
+    .text("Monthly Global Land-Surface Temperature");
+  // DESCRIPTION
+  svg.append('text')
+    .attr("y", (35))
+    .attr("x", (WIDTH / 2))
+    .style("text-anchor", "middle")
+    .attr('id', "description")
+    .text("1753 - 2015: base temperature 8.66℃");
 
     // RENDER RECTS
   svg.selectAll("rect")
@@ -62,21 +80,28 @@ function d3Commands() {
     .attr('y', (d, i) => Y_SCALE(new Date(0, d['month'] - 1)))
     .attr('height', BAR_HEIGHT)
     .attr('width', BAR_WIDTH)
+    .attr('class', "cell")
+    .attr('data-month', (d,i) => d['month'] - 1)
+    .attr('data-year', (d,i) => d['year'])
+    .attr('data-temp', (d,i) => d['variance'])
     .style("margin-top", "0px")
     .style('fill', (d, i) => determineColor(d))
     .on('mouseover', function(d, i) {
       tooltip.transition()
         .duration(0)
+        .attr('data-year', (d, i) => this.getAttribute('data-year'))
         .style('opacity', 0.9);
-      tooltip.html(d['year'] + ' - ' + (MONTHS[(d['month']) - 1]) + '<br>' + 
+        // .attr('data-year', this);
+      tooltip.html(d['year'] + ' - ' + (MONTHS[(d['month']) - 1]) + '<br>' +
       (dataset['baseTemperature'] - d['variance']).toFixed(2) + '&#8451;' + '<br>'
       + (d['variance']).toFixed(2) + '&#8451;')
         .style('left', (d3.event.pageX) + 10 + 'px')
         .style('top', (d3.event.pageY) + 'px')
     })
-    .on('mousout', function(d, i) {
+    .on('mouseout', function(d, i) {
       tooltip.transition()
         .duration(200)
+        .attr('data-year', '')
         .style('opacity', 0);
     })
     ;
@@ -88,7 +113,7 @@ function d3Commands() {
     .call(X_AXIS);
     // X-AXIS TITLE
   svg.append('text')
-    .attr('transform', 'translate(' + WIDTH / 2 + ',' + (HEIGHT - (PADDING / 3)) + ')')
+    .attr('transform', 'translate(' + WIDTH / 2 + ',' + (HEIGHT - (PADDING / 1.3)) + ')')
     .style("text-anchor", "middle")
     .text("Years");
 
