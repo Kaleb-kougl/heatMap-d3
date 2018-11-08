@@ -8,7 +8,7 @@ let dataset;
 HTTP.onreadystatechange = function(){
     if (this.readyState == 4 && this.status == 200) {
         dataset = JSON.parse(HTTP.responseText);
-        console.log(dataset);
+        // console.log(dataset);
         d3Commands();
     } else {
         console.log("something went wrong");
@@ -91,7 +91,6 @@ function d3Commands() {
         .duration(0)
         .attr('data-year', (d, i) => this.getAttribute('data-year'))
         .style('opacity', 0.9);
-        // .attr('data-year', this);
       tooltip.html(d['year'] + ' - ' + (MONTHS[(d['month']) - 1]) + '<br>' +
       (dataset['baseTemperature'] - d['variance']).toFixed(2) + '&#8451;' + '<br>'
       + (d['variance']).toFixed(2) + '&#8451;')
