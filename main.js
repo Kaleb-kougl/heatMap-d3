@@ -17,7 +17,7 @@ HTTP.onreadystatechange = function(){
 
 function d3Commands() {
   // CONSTANTS
-  const PADDING = 55;
+  const PADDING = 60;
   const BAR_HEIGHT = 30;
   const BAR_WIDTH = 5;
   const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -30,7 +30,7 @@ function d3Commands() {
   const X_SCALE = d3.scaleTime()
     .domain([X_MIN, X_MAX])
     .range([PADDING, WIDTH-PADDING]);
-  const X_AXIS = d3.axisBottom(X_SCALE).tickFormat(TIME_FORMAT);
+  const X_AXIS = d3.axisBottom(X_SCALE).tickFormat(TIME_FORMAT).ticks(20);
   // Y-AXIS
   const Y_MIN = new Date(0, d3.min(dataset['monthlyVariance'], (d) => d['month'] - 1));
   const Y_MAX = new Date(0, d3.max(dataset['monthlyVariance'], (d) => d['month'] - 1));
@@ -85,12 +85,25 @@ function d3Commands() {
     .attr('transform', 'translate(0,' + (HEIGHT - PADDING + BAR_HEIGHT) + ')')
     .attr('id', 'x-axis')
     .call(X_AXIS);
+    // X-AXIS TITLE
+  svg.append('text')
+    .attr('transform', 'translate(' + WIDTH / 2 + ',' + (HEIGHT) + ')')
+    .style("text-anchor", "middle")
+    .text("Years");
 
     // Y-AXIS
   svg.append('g')
     .attr('transform', 'translate(' + (PADDING) + ',' + (BAR_HEIGHT / 2) + ')')
     .attr('id', 'y-axis')
     .call(Y_AXIS);
+    // Y-AXIS TITLE
+  svg.append('text')
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0)
+    .attr("x", 0-(HEIGHT / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Months");
 }
 
 
