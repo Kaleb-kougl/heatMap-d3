@@ -155,12 +155,21 @@ function d3Commands() {
 
   legend.append('rect')
     .attr('y', (d, i) => HEIGHT - BAR_HEIGHT - PADDING_TOP)
-    .attr('x', (d, i) => i * BAR_WIDTH * 4)
+    .attr('x', (d, i) => i * BAR_WIDTH * 8)
     .attr('height', BAR_HEIGHT)
-    .attr('width', BAR_WIDTH * 4)
+    .attr('width', BAR_WIDTH * 8)
     .attr('fill', (d, i) => determineColor(d))
     .attr('stroke-width', 1.5)
     .attr('stroke', 'black');
+
+  legend.append('text')
+    .attr('y', (d, i) => HEIGHT - (PADDING_TOP / 1.5))
+    .attr('x', (d, i) => (i * BAR_WIDTH * 8) + 2)
+    .style('fill', 'black')
+    .attr('weight', 'bold')
+    .attr('font-size', '12pt')
+    .text((d) => '' + (8.66 + d.variance).toFixed(2));
+
 }
 
 
